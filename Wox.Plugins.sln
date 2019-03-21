@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wox.Plugin.Links", "Wox.Plugin.Links\Wox.Plugin.Links.csproj", "{B16A909B-E908-4BDB-BAA9-A26EA349C2E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wox.Plugin.Links.Tests", "Wox.Plugin.Links.Tests\Wox.Plugin.Links.Tests.csproj", "{9057990E-9C3A-4548-B6FB-F7CC88F9B966}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B16A909B-E908-4BDB-BAA9-A26EA349C2E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B16A909B-E908-4BDB-BAA9-A26EA349C2E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B16A909B-E908-4BDB-BAA9-A26EA349C2E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B16A909B-E908-4BDB-BAA9-A26EA349C2E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9057990E-9C3A-4548-B6FB-F7CC88F9B966}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9057990E-9C3A-4548-B6FB-F7CC88F9B966}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9057990E-9C3A-4548-B6FB-F7CC88F9B966}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9057990E-9C3A-4548-B6FB-F7CC88F9B966}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {538300B9-9033-487A-81D7-BA81D99B409A}
+	EndGlobalSection
+EndGlobal

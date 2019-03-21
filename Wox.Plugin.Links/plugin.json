@@ -1,0 +1,12 @@
+{
+    "ID":"CEA0FDF000000085823D618A095B3C44",
+    "ActionKeyword":"*",
+    "Name":"Wox Links",
+    "Description":"Links organizer",
+    "Author":"Artiom",
+    "Version":"1.0.0",
+    "Language":"csharp",
+    "Website":"https://github.com/inormis/Wox.Plugin.Links",
+    "ExecuteFileName":"Wox.Plugin.Links.dll",
+    "IcoPath":"icon.png"
+}
