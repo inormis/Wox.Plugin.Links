@@ -41,6 +41,7 @@ namespace Wox.Plugin.Links.Parsers {
                 .Select(x => new Result {
                     Title = $"Rename shortcut [{x.Shortcut}] to => [{newName}]",
                     SubTitle = $"Description: {x.Description}",
+                    IcoPath = @"icon.png",
                     Action = context => {
                         _storage.Rename(x.Shortcut, newName);
                         return true;

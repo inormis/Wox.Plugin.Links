@@ -30,6 +30,7 @@ namespace Wox.Plugin.Links.Parsers {
             return new Result {
                 Title = $"Target configuration to '{Path.GetFileName(jsonPath)}' file",
                 SubTitle = "",
+                IcoPath = @"icon.png",
                 Action = context => _storage.TargetNewPath(jsonPath)
             };
         }

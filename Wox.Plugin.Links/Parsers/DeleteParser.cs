@@ -25,6 +25,7 @@ namespace Wox.Plugin.Links.Parsers {
                 .Select(x => new Result {
                     Title = $"Delete '{x.Shortcut}' link",
                     SubTitle = x.Path,
+                    IcoPath = @"icon.png",
                     Action = context => {
                         _storage.Delete(x.Shortcut);
                         return true;

@@ -34,6 +34,7 @@ namespace Wox.Plugin.Links.Parsers {
                 new Result {
                     Title = message,
                     SubTitle = subTitle,
+                    IcoPath = @"icon.png",
                     Action = context => false
                 }
             };

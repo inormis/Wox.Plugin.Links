@@ -40,6 +40,7 @@ namespace Wox.Plugin.Links.Parsers {
             return new Result {
                 Title = $"[{x.Shortcut}] {description}",
                 SubTitle = FormatDescription(x.Path, arg),
+                IcoPath = @"icon.png",
                 Action = context => {
                     if (canOpenLink) {
                         _linkProcess.Open(url);

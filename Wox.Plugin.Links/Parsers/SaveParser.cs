@@ -30,6 +30,7 @@ namespace Wox.Plugin.Links.Parsers {
             return new Result {
                 Title = $"Save the link as \'{shortCut}\': \'{description}\'",
                 SubTitle = linkPath,
+                IcoPath = @"icon.png",
                 Action = context => {
                     _storage.Set(shortCut, linkPath, description);
                     return true;

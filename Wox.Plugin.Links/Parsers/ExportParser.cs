@@ -17,6 +17,7 @@ namespace Wox.Plugin.Links.Parsers {
                 new Result {
                     Title = "Export links as a json file",
                     SubTitle = "Save dialog will popup",
+                    IcoPath = @"icon.png",
                     Action = Export
                 }
             };
