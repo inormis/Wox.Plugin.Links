@@ -8,7 +8,7 @@ namespace Wox.Plugin.Links {
             Process.Start(path);
         }
 
-        public bool Exists(string filePath) {
+        public bool FileExists(string filePath) {
             return File.Exists(filePath);
         }
 
@@ -28,6 +28,10 @@ namespace Wox.Plugin.Links {
 
         public string GetExtension(string filePath) {
             return Path.GetExtension(filePath);
+        }
+
+        public bool DirectoryExists(string path) {
+            return Directory.Exists(path);
         }
 
         public string ReadAllText(string path) {

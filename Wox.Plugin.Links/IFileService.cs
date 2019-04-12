@@ -1,12 +1,13 @@
 namespace Wox.Plugin.Links {
     public interface IFileService {
-        void Open(string path);
+        bool FileExists(string filePath);
 
-        bool Exists(string filePath);
+        bool DirectoryExists(string path);
 
-        void Start(string command, string args);
         bool WriteAllText(string filePath, string content);
+
         string ReadAllText(string path);
+
         string GetExtension(string filePath);
     }
 }

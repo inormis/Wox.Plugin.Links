@@ -80,7 +80,7 @@ namespace Wox.Plugin.Links {
         }
 
         private Configuration LoadConfiguration() {
-            if (_fileService.Exists(ConfigurationPath)) {
+            if (_fileService.FileExists(ConfigurationPath)) {
                 return JsonConvert.DeserializeObject<Configuration>(_fileService.ReadAllText(ConfigurationPath));
             }
 
@@ -92,7 +92,7 @@ namespace Wox.Plugin.Links {
 
         private Dictionary<string, Link> LoadLinks() {
             var linksFilePath = _configuration.LinksFilePath;
-            if (_fileService.Exists(linksFilePath)) {
+            if (_fileService.FileExists(linksFilePath)) {
                 return ReadLinksFromFile(linksFilePath);
             }
 

@@ -21,17 +21,17 @@ namespace Wox.Links.Tests.Parsers {
 
         [Fact]
         public void ImportedFileExisting_ReturnFalse() {
-            _fileService.Exists(FilePath).Returns(true);
+            _fileService.FileExists(FilePath).Returns(true);
             _fileService.GetExtension(FilePath).Returns(".json");
             _saveParser.TryParse(_queryInstance, out var results).Should()
                 .BeTrue();
             results.Should().HaveCount(1);
-            results.Single().Title.Should().Be("Import configuration file 'file.json' and replace current");
+            results.Single().Title.Should().Be("Target configuration to 'file.json' file");
         }
 
         [Fact]
         public void ImportedFileNotExisting_ReturnFalse() {
-            _fileService.Exists(FilePath).Returns(false);
+            _fileService.FileExists(FilePath).Returns(false);
 
             _saveParser.TryParse(_queryInstance, out var results).Should()
                 .BeFalse();

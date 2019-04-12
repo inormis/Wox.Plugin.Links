@@ -45,8 +45,8 @@ namespace Wox.Links.Tests {
             PluginContext = Substitute.For<IPluginContext>();
             PluginContext.Directory.Returns(PluginDirectory);
 
-            FileService.Exists(ConfigurationPath).Returns(true);
-            FileService.Exists(LinksPath).Returns(true);
+            FileService.FileExists(ConfigurationPath).Returns(true);
+            FileService.FileExists(LinksPath).Returns(true);
             FileService.ReadAllText(LinksPath).Returns(Links);
             var configuration = JsonConvert.SerializeObject(new Configuration {
                 LinksFilePath = LinksPath
@@ -85,7 +85,7 @@ namespace Wox.Links.Tests {
         [Fact]
         public void SaveNewLink() {
             var results = _container.Resolve<IEngine>()
-                .Execute("link etw http://sm.com some nice link".AsQuery());
+                .Execute("link etw http://sm.com |some nice link".AsQuery());
             results.Should()
                 .HaveCount(1);
 
@@ -95,7 +95,7 @@ namespace Wox.Links.Tests {
         [Fact]
         public void TargetNewFile() {
             var path = @"d:\files.json";
-            FileService.Exists(path)
+            FileService.FileExists(path)
                 .Returns(true);
 
             FileService.GetExtension(path)

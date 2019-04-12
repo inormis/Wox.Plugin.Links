@@ -14,7 +14,7 @@ namespace Wox.Plugin.Links.Parsers {
         }
 
         protected override bool CustomParse(IQuery query) {
-            return _fileService.Exists(query.SecondToEndSearch) &&
+            return _fileService.FileExists(query.SecondToEndSearch) &&
                    string.Compare(_fileService.GetExtension(query.SecondToEndSearch), ".json",
                        StringComparison.InvariantCultureIgnoreCase) == 0;
         }
