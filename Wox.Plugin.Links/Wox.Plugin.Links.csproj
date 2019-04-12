@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>C:\Users\akuci\AppData\Roaming\Wox\Plugins\Wox Links-579d35d9-afcd-409f-8d58-86863b9964e7</OutputPath>
+    <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -76,7 +76,7 @@
     <Compile Include="Parsers\SaveParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryInstance.cs" />
-    <Compile Include="Services\ILinkProcess.cs" />
+    <Compile Include="Services\LinkProcessService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

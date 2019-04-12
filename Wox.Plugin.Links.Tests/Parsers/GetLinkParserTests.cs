@@ -10,7 +10,7 @@ namespace Wox.Links.Tests.Parsers {
     public class GetLinkParserTests {
         public GetLinkParserTests() {
             _storage = Substitute.For<IStorage>();
-            _linkProcess = Substitute.For<ILinkProcess>();
+            _linkProcess = Substitute.For<ILinkProcessService>();
             _saveParser = new GetLinkParser(_storage, _linkProcess);
             _storage.GetLinks().Returns(_links);
         }
@@ -41,7 +41,7 @@ namespace Wox.Links.Tests.Parsers {
             }
         };
 
-        private readonly ILinkProcess _linkProcess;
+        private readonly ILinkProcessService _linkProcess;
 
         [Fact]
         public void InputIsWordWithCapitalCase_IgnoreMatchesOfLowerCase() {

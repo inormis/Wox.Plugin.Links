@@ -4,10 +4,10 @@ using Wox.Plugin.Links.Services;
 
 namespace Wox.Plugin.Links.Parsers {
     public class GetLinkParser : IParser {
-        private readonly ILinkProcess _linkProcess;
+        private readonly ILinkProcessService _linkProcess;
         private readonly IStorage _storage;
 
-        public GetLinkParser(IStorage storage, ILinkProcess linkProcess) {
+        public GetLinkParser(IStorage storage, ILinkProcessService linkProcess) {
             _linkProcess = linkProcess;
             _storage = storage;
         }

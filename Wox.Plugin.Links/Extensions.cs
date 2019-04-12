@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Wox.Plugin.Links {
@@ -26,6 +27,13 @@ namespace Wox.Plugin.Links {
         public static bool MatchShortcut(this string value, string input) {
             if (string.IsNullOrWhiteSpace(input)) {
                 return false;
+            }
+
+            var startsWithHash = input.First() == '#';
+            if (input.Length == 1 && startsWithHash)
+                return true;
+            if (startsWithHash) {
+                input = input.Substring(1);
             }
 
             if (value.ContainsCaseInsensitive(input)) {
