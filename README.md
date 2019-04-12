@@ -18,17 +18,21 @@ Examples
 
 ## Open shortcut
 Type the name of the shortcut. If shortcut requires parameter, pass it separated with a space.
-Plugin matches shortcuts if shortcut contains the input (case insencitive
-e.g.
-Saved shortcuts are
+Plugin matches shortcuts if shortcut contains the input (case insencitive)
+e.g. Saved shortcuts are
 
  - OpenAPI 
  - OpenProject 
  - gh 
  - projects
 
-Input:  **ope**, results are: **Ope**nAPI, **Ope**nProject shurtcut
-Input: **PRO**, results are: Open**Pro**ject, **pro**jects
+Input:  **ope**, results are: 
+ - **Ope**nAPI
+ - **Ope**nProject shurtcut
+
+Input: **PRO**, results are: 
+- Open**Pro**ject
+- **pro**jects
 
 ## Export
 
