@@ -11,7 +11,7 @@ Examples
 
 |Code|Explanation  | 
 |--|--|
-| 1. `link gh https://github.com/ Open Github` | Creates '**gh**' shortcut what will open 'https://github.com/' url in your default browser, with '*Open Github*' description (visible in the query result)  |
+| 1. `link gh https://github.com/ \| Open Github` | Creates '**gh**' shortcut what will open 'https://github.com/' url in your default browser, with '*Open Github*' description (visible in the query result)  |
 | 2. `link yt https://youtrack.jetbrains.com/issue/RIDER-@@` | Creates '**yt**' shortcut with a required parameter | 
 | 3. `link openHello C:\Projects\HelloWorld\HelloWorld.sln` |Opens `HelloWorld.sln` file with your default application| 
 | 4. `link projects C:\Projects\` |Opens `C:\Projects\` Directory on your machine | 
