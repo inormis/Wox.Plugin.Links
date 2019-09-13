@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Wox.Plugin.Links.Services;
 
 namespace Wox.Plugin.Links.Parsers {
     public class SaveParser : BaseParser {
         private readonly IStorage _storage;
         private readonly IFileService _fileService;
+        private IClipboardService _clipboardService;
 
-        public SaveParser(IStorage storage, IFileService fileService) : base(PluginKey) {
+        public SaveParser(IStorage storage, IFileService fileService, IClipboardService clipboardService) :
+            base(PluginKey) {
+            _clipboardService = clipboardService;
             _fileService = fileService;
             _storage = storage;
         }
@@ -17,27 +21,60 @@ namespace Wox.Plugin.Links.Parsers {
         }
 
         protected override List<Result> Execute(IQuery query) {
-            var shortcut = query.SecondToEndSearch.Split(' ').FirstOrDefault();
-            var rest = query.SecondToEndSearch.Substring(shortcut.Length).Trim();
-            var args = rest.Split('|');
-            var linkPath = args.FirstOrDefault().Trim();
-            var description = args.Skip(1).FirstOrDefault()?.Trim();
+            var querySearch = query.SecondToEndSearch;
+            var linkType = GetLinkType(ref querySearch);
+
+            var shortcut = querySearch.Split(' ').First().Trim();
+            var rest = querySearch.Substring(shortcut.Length).Trim();
+
+            
+            if(linkType==LinkType.ClipboardTemplate)
+                return new List<Result> {
+                    CreateTemplateLink(shortcut, rest)
+                };
+            var descriptionSeparatorIndex = rest.IndexOf("|", StringComparison.InvariantCulture);
+            var linkPath = descriptionSeparatorIndex == -1 ? rest : rest.Substring(0, descriptionSeparatorIndex).Trim();
+            var description = descriptionSeparatorIndex == -1 ? "" : rest.Substring(descriptionSeparatorIndex + 1);
+
             return new List<Result> {
-                CreateResult(shortcut, linkPath, description)
+                CreatePathLinkResult(shortcut, linkType, linkPath.Trim(), description.Trim())
             };
         }
 
-        private Result CreateResult(string shortCut, string linkPath, string description) {
+        private Result CreateTemplateLink(string shortCut, string description) {
+            return new Result {
+                Title = $"Save template '{shortCut}'",
+                SubTitle = _clipboardService.GetText()?.Replace(Environment.NewLine, " ↵ "),
+                IcoPath = @"icon.png",
+                Action = context => {
+                    var text = _clipboardService.GetText();
+                    _storage.Set(shortCut, LinkType.ClipboardTemplate, text, description);
+                    return true;
+                }
+            };
+        }
+
+        private LinkType GetLinkType(ref string rest) {
+            var flag = rest.Split(' ').FirstOrDefault()?.ToLowerInvariant();
+            if (flag == "-t") {
+                rest = rest.Substring(flag.Length).Trim();
+                return LinkType.ClipboardTemplate;
+            }
+
+            return LinkType.Path;
+        }
+
+        private Result CreatePathLinkResult(string shortCut, LinkType linkType, string linkPath, string description) {
             var isValidPath = _fileService.FileExists(linkPath) || _fileService.DirectoryExists(linkPath) ||
                               Uri.IsWellFormedUriString(linkPath, UriKind.Absolute);
 
             if (isValidPath) {
                 return new Result {
                     Title = $"Save the link as \'{shortCut}\': \'{description}\'",
-                    SubTitle = linkPath,
+                    SubTitle = linkPath.Replace(Environment.NewLine,"↵"),
                     IcoPath = @"icon.png",
                     Action = context => {
-                        _storage.Set(shortCut, linkPath, description);
+                        _storage.Set(shortCut, LinkType.Path, linkPath, description);
                         return true;
                     }
                 };
@@ -50,5 +87,9 @@ namespace Wox.Plugin.Links.Parsers {
                 Action = context => false
             };
         }
+    }
+
+    public class SaveQuery {
+        
     }
 }

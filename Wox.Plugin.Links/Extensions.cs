@@ -47,7 +47,7 @@ namespace Wox.Plugin.Links {
 
             var lastIndex = -1;
             foreach (var part in inputs) {
-                var index = value.IndexOf(part);
+                var index = value.IndexOf(part, StringComparison.InvariantCultureIgnoreCase);
                 if (index <= lastIndex) {
                     return false;
                 }

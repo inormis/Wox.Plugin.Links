@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Wox.Plugin.Links {
     public interface IStorage {
-        void Set(string shortcut, string url, string description);
+        void Set(string shortcut, LinkType linkType, string data, string description);
 
         Link[] GetLinks();
 
@@ -32,11 +32,12 @@ namespace Wox.Plugin.Links {
         private string ConfigurationPath => Path.Combine(_directory ?? "", "config.json");
         private string DefaultLinksPath => Path.Combine(_directory ?? "", "links.json");
 
-        public void Set(string shortcut, string url, string description) {
+        public void Set(string shortcut, LinkType linkType, string data, string description) {
             _links[shortcut] = new Link {
-                Path = url,
+                Path = data,
                 Shortcut = shortcut,
-                Description = description
+                Description = description,
+                Type = linkType
             };
             Save();
         }

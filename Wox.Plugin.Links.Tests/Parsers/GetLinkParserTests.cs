@@ -11,7 +11,7 @@ namespace Wox.Links.Tests.Parsers {
         public GetLinkParserTests() {
             _storage = Substitute.For<IStorage>();
             _linkProcess = Substitute.For<ILinkProcessService>();
-            _saveParser = new GetLinkParser(_storage, _linkProcess);
+            _saveParser = new GetLinkParser(_storage, _linkProcess, Substitute.For<IClipboardService>());
             _storage.GetLinks().Returns(_links);
         }
 

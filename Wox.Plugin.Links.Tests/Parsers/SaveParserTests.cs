@@ -1,8 +1,10 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using FluentAssertions;
 using NSubstitute;
 using Wox.Plugin;
 using Wox.Plugin.Links;
 using Wox.Plugin.Links.Parsers;
+using Wox.Plugin.Links.Services;
 using Xunit;
 
 namespace Wox.Links.Tests.Parsers {
@@ -10,11 +12,13 @@ namespace Wox.Links.Tests.Parsers {
         private readonly SaveParser _saveParser;
         private readonly IStorage _storage;
         private readonly IFileService _fileService;
+        private IClipboardService _clipboard;
 
         public SaveParserTests() {
             _storage = Substitute.For<IStorage>();
             _fileService = Substitute.For<IFileService>();
-            _saveParser = new SaveParser(_storage, _fileService);
+            _clipboard = Substitute.For<IClipboardService>();
+            _saveParser = new SaveParser(_storage, _fileService, _clipboard);
         }
 
         [Theory]
@@ -33,7 +37,7 @@ namespace Wox.Links.Tests.Parsers {
             result.SubTitle.Should().Be("https://some.com/link-@@");
 
             result.Action(new ActionContext());
-            _storage.Received(1).Set("Shortcut", "https://some.com/link-@@", description);
+            _storage.Received(1).Set("Shortcut", LinkType.Path, "https://some.com/link-@@", description);
         }
 
         [Fact]
@@ -49,7 +53,7 @@ namespace Wox.Links.Tests.Parsers {
             result.SubTitle.Should().Be(@"C:\Program Files\Anki\anki.exe");
 
             result.Action(new ActionContext());
-            _storage.Received(1).Set("myeditor", @"C:\Program Files\Anki\anki.exe", "My editor");
+            _storage.Received(1).Set("myeditor", LinkType.Path, @"C:\Program Files\Anki\anki.exe", "My editor");
         }
 
         [Fact]
@@ -65,7 +69,7 @@ namespace Wox.Links.Tests.Parsers {
             result.SubTitle.Should().Be(@"C:\Program Files");
 
             result.Action(new ActionContext());
-            _storage.Received(1).Set("myeditor", @"C:\Program Files", "My editor");
+            _storage.Received(1).Set("myeditor", LinkType.Path, @"C:\Program Files", "My editor");
         }
 
         [Theory]
@@ -77,6 +81,23 @@ namespace Wox.Links.Tests.Parsers {
                 .Should()
                 .BeFalse();
             results.Should().HaveCount(0);
+        }
+
+        [Fact]
+        public void LinkTemplate() {
+            const string template = @"Select * from player";
+            _clipboard.GetText().Returns(template);
+            _saveParser.TryParse($"link -t SelectAllPlayers".AsQuery(), out var results)
+                .Should()
+                .BeTrue();
+            
+            results.Should().HaveCount(1);
+            var link = results.Single();
+            link.Title.Should().Be("Save template 'SelectAllPlayers'");
+            link.SubTitle.Should().Be(template);
+            link.Action(new ActionContext());
+            _storage.Received(1).Set("SelectAllPlayers", LinkType.ClipboardTemplate, template, Arg.Any<string>());
+
         }
     }
 }

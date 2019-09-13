@@ -17,6 +17,7 @@ namespace Wox.Plugin.Links {
             container.RegisterType<Engine>().AsImplementedInterfaces().SingleInstance();
             container.RegisterType<SettingsProvider>().AsImplementedInterfaces().SingleInstance();
             container.RegisterType<Storage>().As<IStorage>().SingleInstance();
+            container.RegisterType<ClipboardService>().As<IClipboardService>().SingleInstance();
             container.RegisterType<LinkProcess>().As<ILinkProcessService>().SingleInstance();
             container.RegisterType<FileService>().As<IFileService>().SingleInstance();
 

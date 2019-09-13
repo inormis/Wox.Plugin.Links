@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Wox.Plugin.Links.Services;
 
@@ -6,8 +7,10 @@ namespace Wox.Plugin.Links.Parsers {
     public class GetLinkParser : IParser {
         private readonly ILinkProcessService _linkProcess;
         private readonly IStorage _storage;
+        private IClipboardService _clipboardService;
 
-        public GetLinkParser(IStorage storage, ILinkProcessService linkProcess) {
+        public GetLinkParser(IStorage storage, ILinkProcessService linkProcess, IClipboardService clipboardService) {
+            _clipboardService = clipboardService;
             _linkProcess = linkProcess;
             _storage = storage;
         }
@@ -33,17 +36,30 @@ namespace Wox.Plugin.Links.Parsers {
 
         public ParserPriority Priority { get; } = ParserPriority.High;
 
-        private Result Create(Link x, string arg) {
-            var url = Format(x.Path, arg);
-            var canOpenLink = CanOpenLink(url);
-            var description = string.IsNullOrEmpty(x.Description) ? "" : FormatDescription(x.Description, arg);
+        private Result Create(Link link, string arg) {
+            var data = Format(link.Path, arg);
+
+            if (link.Type == LinkType.ClipboardTemplate) {
+                return new Result {
+                    Title = $"[{link.Shortcut}] {link.Description}",
+                    SubTitle = data.Replace(Environment.NewLine, " ↵ "),
+                    IcoPath = @"icon.png",
+                    Action = context => {
+                        _clipboardService.SetText(data);
+                        return true;
+                    }
+                };
+            }
+
+            var canOpenLink = CanOpenLink(data);
+            var description = string.IsNullOrEmpty(link.Description) ? "" : FormatDescription(link.Description, arg);
             return new Result {
-                Title = $"[{x.Shortcut}] {description}",
-                SubTitle = FormatDescription(x.Path, arg),
+                Title = $"[{link.Shortcut}] {description}",
+                SubTitle = FormatDescription(link.Path, arg),
                 IcoPath = @"icon.png",
                 Action = context => {
                     if (canOpenLink) {
-                        _linkProcess.Open(url);
+                        _linkProcess.Open(data);
                     }
 
                     return canOpenLink;
