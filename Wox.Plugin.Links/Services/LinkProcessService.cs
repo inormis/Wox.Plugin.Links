@@ -2,12 +2,18 @@
 
 namespace Wox.Plugin.Links.Services {
     public interface ILinkProcessService {
-        void Open(string path);
+        bool Open(string path);
     }
 
     internal class LinkProcess : ILinkProcessService {
-        public void Open(string path) {
-            Process.Start(path);
+        public bool Open(string path) {
+            try {
+                Process.Start(path);
+                return true;
+            }
+            catch {
+                return false;
+            }
         }
     }
 }
