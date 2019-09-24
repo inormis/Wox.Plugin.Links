@@ -124,8 +124,8 @@ namespace Wox.Plugin.Links {
     }
 
     public class Configuration {
-        
-        public int Version { get; set; }
+
+        public int Version { get; set; } = 1;
         
         public string LinksFilePath { get; set; }
     }

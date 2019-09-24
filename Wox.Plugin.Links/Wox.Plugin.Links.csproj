@@ -66,6 +66,7 @@
     <Compile Include="Link.cs" />
     <Compile Include="LinkType.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Migration.cs" />
     <Compile Include="Parsers\BaseParser.cs" />
     <Compile Include="Parsers\DeleteParser.cs" />
     <Compile Include="Parsers\ExportParser.cs" />
