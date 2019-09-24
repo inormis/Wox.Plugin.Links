@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -10,27 +11,35 @@ namespace Wox.Plugin.Links {
         Link[] GetLinks();
 
         void Delete(string shortcut);
+
         bool TargetNewPath(string jsonPath);
+
         string ExportAsJsonString();
+
         bool TryGetByShortcut(string shortcut, out Link link);
+
         void Rename(string existingShortCut, string newShortcut);
     }
 
     internal class Storage : IStorage {
         private readonly Configuration _configuration;
-        private readonly string _directory;
         private Dictionary<string, Link> _links;
         private readonly IFileService _fileService;
 
-        public Storage(IPluginContext pluginContext, IFileService fileService) {
+        public Storage(IFileService fileService) {
             _fileService = fileService;
-            _directory = pluginContext.Directory;
             _configuration = LoadConfiguration();
             _links = LoadLinks();
+
+            var appDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                @"Wox.Plugins.Links");
+            _fileService.EnsureDirectoryExists(appDirectory);
+            _configurationPath = Path.Combine(appDirectory, "config.json");
+            _defaultLinksPath = Path.Combine(appDirectory, "links.json");
         }
 
-        private string ConfigurationPath => Path.Combine(_directory ?? "", "config.json");
-        private string DefaultLinksPath => Path.Combine(_directory ?? "", "links.json");
+        private readonly string _configurationPath;
+        private readonly string _defaultLinksPath;
 
         public void Set(string shortcut, LinkType linkType, string data, string description) {
             _links[shortcut] = new Link {
@@ -81,12 +90,12 @@ namespace Wox.Plugin.Links {
         }
 
         private Configuration LoadConfiguration() {
-            if (_fileService.FileExists(ConfigurationPath)) {
-                return JsonConvert.DeserializeObject<Configuration>(_fileService.ReadAllText(ConfigurationPath));
+            if (_fileService.FileExists(_configurationPath)) {
+                return JsonConvert.DeserializeObject<Configuration>(_fileService.ReadAllText(_configurationPath));
             }
 
             var configuration = new Configuration {
-                LinksFilePath = DefaultLinksPath
+                LinksFilePath = _defaultLinksPath
             };
             return configuration;
         }
@@ -107,7 +116,7 @@ namespace Wox.Plugin.Links {
 
         private void Save() {
             var serializedConfiguration = JsonConvert.SerializeObject(_configuration, Formatting.Indented);
-            _fileService.WriteAllText(ConfigurationPath, serializedConfiguration);
+            _fileService.WriteAllText(_configurationPath, serializedConfiguration);
 
             var content = JsonConvert.SerializeObject(_links.Values.ToArray(), Formatting.Indented);
             _fileService.WriteAllText(_configuration.LinksFilePath, content);
@@ -115,6 +124,9 @@ namespace Wox.Plugin.Links {
     }
 
     public class Configuration {
+        
+        public int Version { get; set; }
+        
         public string LinksFilePath { get; set; }
     }
 }

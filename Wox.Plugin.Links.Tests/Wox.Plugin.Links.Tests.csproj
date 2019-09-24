@@ -93,17 +93,9 @@
     <Compile Include="TestModule.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Wox.Plugin.KeePass\Wox.Plugin.KeePass.csproj">
-      <Project>{b16a9a9b-4900-4000-baa9-a26ea349c2e5}</Project>
-      <Name>Wox.Plugin.KeePass</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Wox.Plugin.Links\Wox.Plugin.Links.csproj">
       <Project>{b16a909b-e908-4bdb-baa9-a26ea349c2e5}</Project>
       <Name>Wox.Plugin.Links</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Wox.Plugins.Common\Wox.Plugins.Common.csproj">
-      <Project>{052ec7e2-94e4-4d27-9aec-8b567cba4288}</Project>
-      <Name>Wox.Plugins.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

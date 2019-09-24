@@ -9,5 +9,7 @@ namespace Wox.Plugin.Links {
         string ReadAllText(string path);
 
         string GetExtension(string filePath);
+
+        void EnsureDirectoryExists(string path);
     }
 }
