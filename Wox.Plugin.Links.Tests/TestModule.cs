@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using NSubstitute;
 using Wox.Plugin;
 using Wox.Plugin.Links;
+using Wox.Plugin.Links.Services;
 using Xunit;
 
 namespace Wox.Links.Tests {
@@ -44,7 +45,7 @@ namespace Wox.Links.Tests {
 
         private const string LinksPath = @"D:\links.json";
 
-        public IFileService FileService { get; }
+        internal IFileService FileService { get; }
 
         public IPluginContext PluginContext { get; }
 
@@ -77,16 +78,6 @@ namespace Wox.Links.Tests {
                 .Execute("jmy".AsQuery())
                 .Should()
                 .HaveCount(1);
-        }
-
-        [Fact]
-        public void DeleteLink() {
-            var results = _container.Resolve<IEngine>()
-                .Execute("-d jmy".AsQuery());
-            results.Should()
-                .HaveCount(1);
-
-            results.Single().Title.Should().Be("Delete 'jmy' link");
         }
 
         [Fact]

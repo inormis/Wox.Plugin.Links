@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace Wox.Plugin.Links {
-    internal class Main : IPlugin {
+    public class LinksPlugin : IPlugin {
         private IEngine _engine;
 
         public List<Result> Query(Query query) {

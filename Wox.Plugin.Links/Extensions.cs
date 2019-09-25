@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Wox.Plugin.Links {
     public static class Extensions {
@@ -18,39 +16,6 @@ namespace Wox.Plugin.Links {
             }
 
             return value.IndexOf(part, StringComparison.InvariantCultureIgnoreCase) == 0;
-        }
-
-        public static bool MatchShortcut(this string value, string input) {
-            if (string.IsNullOrWhiteSpace(input)) {
-                return false;
-            }
-
-            var startsWithHash = input.First() == '#';
-            if (input.Length == 1 && startsWithHash)
-                return true;
-            if (startsWithHash) {
-                input = input.Substring(1);
-            }
-
-            if (value.ContainsCaseInsensitive(input)) {
-                return true;
-            }
-
-            var lastIndex = -1;
-            foreach (var part in input) {
-                var index = value.IndexOf(part.ToString(), lastIndex +1, StringComparison.InvariantCultureIgnoreCase);
-                if (index <= lastIndex) {
-                    return false;
-                }
-
-                lastIndex = index;
-            }
-
-            return true;
-        }
-
-        private static string[] SplitCamelCase(this string source) {
-            return Regex.Split(source, @"(?<!^)(?=[A-Z])");
         }
     }
 }

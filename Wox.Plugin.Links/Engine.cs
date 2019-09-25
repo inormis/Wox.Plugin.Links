@@ -3,6 +3,10 @@ using System.Linq;
 using Wox.Plugin.Links.Parsers;
 
 namespace Wox.Plugin.Links {
+    public interface IEngine {
+        IEnumerable<Result> Execute(IQuery query);
+    }
+
     public class Engine : IEngine {
         private readonly IEnumerable<IParser> _parsers;
 

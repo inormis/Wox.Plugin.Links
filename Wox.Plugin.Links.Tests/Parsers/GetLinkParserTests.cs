@@ -46,7 +46,7 @@ namespace Wox.Links.Tests.Parsers {
         private readonly ILinkProcessService _linkProcess;
         private readonly ActionContext _actionContext = new ActionContext {SpecialKeyState = new SpecialKeyState()};
 
-        [Theory]
+        [Theory(Skip = "https://github.com/Wox-launcher/Wox/issues/1857")]
         [InlineData("gooo")]
         [InlineData("gan")]
         [InlineData("golea")]
@@ -56,15 +56,6 @@ namespace Wox.Links.Tests.Parsers {
                 .Should().BeTrue();
             results.Should().HaveCount(1);
             results.Single().Title.Should().Contain("GoogleAction");
-        }
-
-        [Fact]
-        public void InputIsWordWithCapitalCase_MatchByNameSplitByCapitalCases() {
-            _parser.TryParse("GA".AsQuery(), out var results)
-                .Should().BeTrue();
-            results.Should().HaveCount(1);
-
-            results[0].Title.Should().StartWith("[GoogleAction]");
         }
 
         [Fact]
@@ -118,6 +109,36 @@ namespace Wox.Links.Tests.Parsers {
             results[0].SubTitle.Should().Be("https://jira.com/STF-{Parameter is missing}");
             results[0].Action(_actionContext).Should().BeFalse();
             _linkProcess.DidNotReceive().Open(Arg.Any<string>());
+        }
+
+        [Fact(Skip = "https://github.com/Wox-launcher/Wox/issues/1857")]
+        public void MatchSeveralLinks_SortByMatching() {
+            var links = new[] {"Stackoverflows", "so", "sos", "1so"}
+                .Select(x => new Link {Shortcut = x, Path = "https://so.com"}).ToArray();
+            _storage.GetLinks().Returns(links);
+
+            var parsed = _parser.TryParse("so".AsQuery(), out var results);
+
+            parsed.Should().BeTrue();
+            results.Should().HaveCount(4);
+
+            results[0].Title.Should().StartWith("[so]");
+            results[1].Title.Should().StartWith("[sos]");
+            results[2].Title.Should().StartWith("[1so]");
+            results[3].Title.Should().StartWith("[Stackoverflows]");
+        }
+        
+        [Theory(Skip = "https://github.com/Wox-launcher/Wox/issues/1857")]
+        [InlineData("so", 0)]
+        [InlineData("sos", 0)]
+        [InlineData("1so", 1)]
+        [InlineData("s1o", 1)]
+        [InlineData("_so", 1)]
+        [InlineData("stackOVerflow", 4)]
+        public void LinkMatches(string shortcut, int expectedIndex) {
+            new Link {
+                Shortcut = shortcut
+            }.Matches("so").Index.Should().Be(expectedIndex);
         }
     }
 }

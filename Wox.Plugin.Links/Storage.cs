@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Serilog;
+using Wox.Plugin.Links.Services;
 
 namespace Wox.Plugin.Links {
     public interface IStorage {
@@ -21,12 +23,13 @@ namespace Wox.Plugin.Links {
         void Rename(string existingShortCut, string newShortcut);
     }
 
-    internal class Storage : IStorage {
+    public class Storage : IStorage {
         private readonly Configuration _configuration;
         private Dictionary<string, Link> _links;
         private readonly IFileService _fileService;
 
-        public Storage(IFileService fileService) {
+        public Storage(IFileService fileService, ILogger logger) {
+            _logger = logger;
             _fileService = fileService;
 
             var appDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -34,13 +37,15 @@ namespace Wox.Plugin.Links {
             _fileService.EnsureDirectoryExists(appDirectory);
             _configurationPath = Path.Combine(appDirectory, "config.json");
             _defaultLinksPath = Path.Combine(appDirectory, "links.json");
-            
+            _logger.Information(
+                $"Initiate {nameof(Storage)}, ConfigurationPath: '{_configurationPath}', DefaultLinksPath: '{_defaultLinksPath}'");
             _configuration = LoadConfiguration();
             _links = LoadLinks();
         }
 
         private readonly string _configurationPath;
         private readonly string _defaultLinksPath;
+        private readonly ILogger _logger;
 
         public void Set(string shortcut, LinkType linkType, string data, string description) {
             _links[shortcut] = new Link {
@@ -92,7 +97,9 @@ namespace Wox.Plugin.Links {
 
         private Configuration LoadConfiguration() {
             if (_fileService.FileExists(_configurationPath)) {
-                return JsonConvert.DeserializeObject<Configuration>(_fileService.ReadAllText(_configurationPath));
+                var content = _fileService.ReadAllText(_configurationPath);
+                _logger.Information($"Loaded configuration: {content}");
+                return JsonConvert.DeserializeObject<Configuration>(content);
             }
 
             var configuration = new Configuration {
@@ -112,6 +119,7 @@ namespace Wox.Plugin.Links {
 
         private Dictionary<string, Link> ReadLinksFromFile(string linksFilePath) {
             var links = JsonConvert.DeserializeObject<Link[]>(_fileService.ReadAllText(linksFilePath));
+            _logger.Information($"Loaded [{links.Length}] links from {linksFilePath}");
             return links.ToDictionary(x => x.Shortcut, x => x);
         }
 
@@ -121,13 +129,14 @@ namespace Wox.Plugin.Links {
 
             var content = JsonConvert.SerializeObject(_links.Values.ToArray(), Formatting.Indented);
             _fileService.WriteAllText(_configuration.LinksFilePath, content);
+
+            _logger.Information($"Saved [{_links}] links to {_configuration.LinksFilePath}");
         }
     }
 
     public class Configuration {
-
         public int Version { get; set; } = 1;
-        
+
         public string LinksFilePath { get; set; }
     }
 }

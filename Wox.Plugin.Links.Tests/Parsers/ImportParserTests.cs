@@ -3,6 +3,7 @@ using FluentAssertions;
 using NSubstitute;
 using Wox.Plugin.Links;
 using Wox.Plugin.Links.Parsers;
+using Wox.Plugin.Links.Services;
 using Xunit;
 
 namespace Wox.Links.Tests.Parsers {

@@ -7,7 +7,7 @@ namespace Wox.Plugin.Links.Parsers {
     public class SaveParser : BaseParser {
         private readonly IStorage _storage;
         private readonly IFileService _fileService;
-        private IClipboardService _clipboardService;
+        private readonly IClipboardService _clipboardService;
 
         public SaveParser(IStorage storage, IFileService fileService, IClipboardService clipboardService) :
             base(PluginKey) {
@@ -27,8 +27,8 @@ namespace Wox.Plugin.Links.Parsers {
             var shortcut = querySearch.Split(' ').First().Trim();
             var rest = querySearch.Substring(shortcut.Length).Trim();
 
-            
-            if(linkType==LinkType.ClipboardTemplate)
+
+            if (linkType == LinkType.ClipboardTemplate)
                 return new List<Result> {
                     CreateTemplateLink(shortcut, rest)
                 };
@@ -71,7 +71,7 @@ namespace Wox.Plugin.Links.Parsers {
             if (isValidPath) {
                 return new Result {
                     Title = $"Save the link as \'{shortCut}\': \'{description}\'",
-                    SubTitle = linkPath.Replace(Environment.NewLine,"↵"),
+                    SubTitle = linkPath.Replace(Environment.NewLine, "↵"),
                     IcoPath = @"icon.png",
                     Action = context => {
                         _storage.Set(shortCut, LinkType.Path, linkPath, description);
@@ -87,9 +87,5 @@ namespace Wox.Plugin.Links.Parsers {
                 Action = context => false
             };
         }
-    }
-
-    public class SaveQuery {
-        
     }
 }

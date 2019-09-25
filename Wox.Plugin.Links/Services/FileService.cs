@@ -1,7 +1,21 @@
 using System;
 using System.IO;
 
-namespace Wox.Plugin.Links {
+namespace Wox.Plugin.Links.Services {
+    public interface IFileService {
+        bool FileExists(string filePath);
+
+        bool DirectoryExists(string path);
+
+        bool WriteAllText(string filePath, string content);
+
+        string ReadAllText(string path);
+
+        string GetExtension(string filePath);
+
+        void EnsureDirectoryExists(string path);
+    }
+    
     public class FileService : IFileService {
         public bool FileExists(string filePath) {
             return File.Exists(filePath);

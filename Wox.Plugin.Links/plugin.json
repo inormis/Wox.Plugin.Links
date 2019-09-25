@@ -4,7 +4,7 @@
     "Name":"Wox Links",
     "Description":"Links organizer. Create shortcuts for links and templates.",
     "Author":"Artiom",
-    "Version":"1.1.1",
+    "Version":"1.2",
     "Language":"csharp",
     "Website":"https://github.com/inormis/Wox.Plugin.Links",
     "ExecuteFileName":"Wox.Plugin.Links.dll",

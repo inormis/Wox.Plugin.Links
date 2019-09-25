@@ -12,7 +12,7 @@ namespace Wox.Links.Tests.Parsers {
         private readonly SaveParser _saveParser;
         private readonly IStorage _storage;
         private readonly IFileService _fileService;
-        private IClipboardService _clipboard;
+        private readonly IClipboardService _clipboard;
 
         public SaveParserTests() {
             _storage = Substitute.For<IStorage>();
@@ -87,17 +87,16 @@ namespace Wox.Links.Tests.Parsers {
         public void LinkTemplate() {
             const string template = @"Select * from player";
             _clipboard.GetText().Returns(template);
-            _saveParser.TryParse($"link -t SelectAllPlayers".AsQuery(), out var results)
+            _saveParser.TryParse("link -t SelectAllPlayers".AsQuery(), out var results)
                 .Should()
                 .BeTrue();
-            
+
             results.Should().HaveCount(1);
             var link = results.Single();
             link.Title.Should().Be("Save template 'SelectAllPlayers'");
             link.SubTitle.Should().Be(template);
             link.Action(new ActionContext());
             _storage.Received(1).Set("SelectAllPlayers", LinkType.ClipboardTemplate, template, Arg.Any<string>());
-
         }
     }
 }

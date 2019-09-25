@@ -21,12 +21,17 @@ namespace Wox.Plugin.Links.Parsers {
 
             if (string.IsNullOrWhiteSpace(query.FirstSearch)) return false;
 
-            var links = _storage.GetLinks().Where(x => x.Shortcut.MatchShortcut(query.FirstSearch)).ToArray();
+            var links = _storage.GetLinks().Select(x => x.Matches(query.FirstSearch))
+                .Where(x => x.Matches)
+                .OrderBy(link => link.Index)
+                .ThenBy(link => link.Link.Shortcut)
+                .ToArray();
+
             if (links.Length == 0) return false;
 
             results.AddRange(links.Select(link => {
                 var args = query.Arguments.ToArray();
-                return Create(link, args.FirstOrDefault());
+                return Create(link.Link, args.FirstOrDefault());
             }));
             return true;
         }
@@ -38,7 +43,7 @@ namespace Wox.Plugin.Links.Parsers {
                 ? ""
                 : FormatDescription(link.Description, arg);
             var title = $"[{link.Shortcut}] {description}";
-            
+
             var canOpenLink = !ArgumentIsMissing(link.Path, arg);
             var formattedData = FormatDescription(link.Path, arg);
             var subTitle = link.Type == LinkType.Path

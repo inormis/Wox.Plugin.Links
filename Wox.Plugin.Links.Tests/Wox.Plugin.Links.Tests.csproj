@@ -54,6 +54,10 @@
       <HintPath>..\packages\NSubstitute.3.1.0\lib\net46\NSubstitute.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
+      <HintPath>..\packages\Serilog.2.8.0\lib\net46\Serilog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -83,7 +87,6 @@
   <ItemGroup>
     <Compile Include="EngineTests.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="Parsers\DeleteParserTests.cs" />
     <Compile Include="Parsers\GetLinkParserTests.cs" />
     <Compile Include="Parsers\ImportParserTests.cs" />
     <Compile Include="Parsers\SaveParserTests.cs" />

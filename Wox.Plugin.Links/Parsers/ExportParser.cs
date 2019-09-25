@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Wox.Plugin.Links.Services;
 
 namespace Wox.Plugin.Links.Parsers {
     public class ExportParser : BaseParser {

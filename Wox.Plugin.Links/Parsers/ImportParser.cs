@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Wox.Plugin.Links.Services;
 
 namespace Wox.Plugin.Links.Parsers {
     public class ImportParser : BaseParser {
