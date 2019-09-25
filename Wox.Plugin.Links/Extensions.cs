@@ -20,10 +20,6 @@ namespace Wox.Plugin.Links {
             return value.IndexOf(part, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
 
-        public static bool NotEmpty(this string value) {
-            return !string.IsNullOrWhiteSpace(value);
-        }
-
         public static bool MatchShortcut(this string value, string input) {
             if (string.IsNullOrWhiteSpace(input)) {
                 return false;
@@ -40,14 +36,9 @@ namespace Wox.Plugin.Links {
                 return true;
             }
 
-            var inputs = input.SplitCamelCase();
-            if (inputs.Length < 2) {
-                return false;
-            }
-
             var lastIndex = -1;
-            foreach (var part in inputs) {
-                var index = value.IndexOf(part, StringComparison.InvariantCultureIgnoreCase);
+            foreach (var part in input) {
+                var index = value.IndexOf(part.ToString(), lastIndex +1, StringComparison.InvariantCultureIgnoreCase);
                 if (index <= lastIndex) {
                     return false;
                 }

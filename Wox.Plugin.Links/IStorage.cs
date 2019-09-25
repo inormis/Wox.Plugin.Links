@@ -28,14 +28,15 @@ namespace Wox.Plugin.Links {
 
         public Storage(IFileService fileService) {
             _fileService = fileService;
-            _configuration = LoadConfiguration();
-            _links = LoadLinks();
 
             var appDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 @"Wox.Plugins.Links");
             _fileService.EnsureDirectoryExists(appDirectory);
             _configurationPath = Path.Combine(appDirectory, "config.json");
             _defaultLinksPath = Path.Combine(appDirectory, "links.json");
+            
+            _configuration = LoadConfiguration();
+            _links = LoadLinks();
         }
 
         private readonly string _configurationPath;

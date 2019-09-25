@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Serialization;
-
-namespace Wox.Plugin.Links {
+﻿namespace Wox.Plugin.Links {
     public class Link {
         public string Shortcut { get; set; }
 

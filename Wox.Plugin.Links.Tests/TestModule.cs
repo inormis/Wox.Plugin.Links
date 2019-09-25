@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Linq;
 using Autofac;
 using FluentAssertions;
@@ -35,15 +37,20 @@ namespace Wox.Links.Tests {
 ]";
 
         private const string PluginDirectory = @"C:\wox\plugins\links";
-        private const string ConfigurationPath = PluginDirectory + @"\config.json";
+
+        private static readonly string ConfigurationPath =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                @"Wox.Plugins.Links\config.json");
+
         private const string LinksPath = @"D:\links.json";
+
         public IFileService FileService { get; }
+
         public IPluginContext PluginContext { get; }
 
         public LinksIntegrationTests() {
             FileService = Substitute.For<IFileService>();
             PluginContext = Substitute.For<IPluginContext>();
-            PluginContext.Directory.Returns(PluginDirectory);
 
             FileService.FileExists(ConfigurationPath).Returns(true);
             FileService.FileExists(LinksPath).Returns(true);

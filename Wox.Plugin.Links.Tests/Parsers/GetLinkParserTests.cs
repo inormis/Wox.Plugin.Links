@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using FluentAssertions;
 using NSubstitute;
 using Wox.Plugin;
 using Wox.Plugin.Links;
@@ -11,12 +12,13 @@ namespace Wox.Links.Tests.Parsers {
         public GetLinkParserTests() {
             _storage = Substitute.For<IStorage>();
             _linkProcess = Substitute.For<ILinkProcessService>();
-            _saveParser = new GetLinkParser(_storage, _linkProcess, Substitute.For<IClipboardService>());
+            _linkProcess.Open(Arg.Any<string>()).Returns(true);
+            _parser = new GetLinkParser(_storage, _linkProcess, Substitute.For<IClipboardService>());
             _storage.GetLinks().Returns(_links);
         }
 
         private readonly IStorage _storage;
-        private readonly GetLinkParser _saveParser;
+        private readonly GetLinkParser _parser;
 
         private readonly Link[] _links = {
             new Link {
@@ -42,17 +44,23 @@ namespace Wox.Links.Tests.Parsers {
         };
 
         private readonly ILinkProcessService _linkProcess;
+        private readonly ActionContext _actionContext = new ActionContext {SpecialKeyState = new SpecialKeyState()};
 
-        [Fact]
-        public void InputIsWordWithCapitalCase_IgnoreMatchesOfLowerCase() {
-            _saveParser.TryParse("GC".AsQuery(), out var results)
-                .Should().BeFalse();
-            results.Should().BeEmpty();
+        [Theory]
+        [InlineData("gooo")]
+        [InlineData("gan")]
+        [InlineData("golea")]
+        [InlineData("actn")]
+        public void MatchShortCutByConsecutiveMatches(string query) {
+            _parser.TryParse(query.AsQuery(), out var results)
+                .Should().BeTrue();
+            results.Should().HaveCount(1);
+            results.Single().Title.Should().Contain("GoogleAction");
         }
 
         [Fact]
         public void InputIsWordWithCapitalCase_MatchByNameSplitByCapitalCases() {
-            _saveParser.TryParse("GA".AsQuery(), out var results)
+            _parser.TryParse("GA".AsQuery(), out var results)
                 .Should().BeTrue();
             results.Should().HaveCount(1);
 
@@ -61,7 +69,7 @@ namespace Wox.Links.Tests.Parsers {
 
         [Fact]
         public void MatchByName_ReturnFullUrl() {
-            _saveParser.TryParse("cut".AsQuery(), out var results).Should()
+            _parser.TryParse("cut".AsQuery(), out var results).Should()
                 .BeTrue();
             results.Should().HaveCount(2);
 
@@ -73,7 +81,7 @@ namespace Wox.Links.Tests.Parsers {
         }
 
         [Fact]
-        public void MatchByNameWithReplacement_ReturnFullUrl() {
+        public void MatchesShortCutAndParameterProvided_ReturnTrue() {
             _storage.GetLinks().Returns(new[] {
                 new Link {
                     Shortcut = "Shortcut",
@@ -82,17 +90,18 @@ namespace Wox.Links.Tests.Parsers {
                 }
             });
 
-            _saveParser.TryParse("cut 8700".AsQuery(), out var results)
+            _parser.TryParse("cut 8700".AsQuery(), out var results)
                 .Should().BeTrue();
 
 
             results[0].Title.Should().Be("[Shortcut] Open IDPF-8700 ticket");
             results[0].SubTitle.Should().Be("https://jira.com/STF-8700");
-            results[0].Action(new ActionContext()).Should().BeTrue();
+            results[0].Action(_actionContext).Should().BeTrue();
+            _linkProcess.Received(1).Open("https://jira.com/STF-8700");
         }
 
         [Fact]
-        public void MatchByNameWithReplacement_ReturnFullUrlFalse() {
+        public void MatchesShortCutAndParameterNotProvided_ReturnFalse() {
             _storage.GetLinks().Returns(new[] {
                 new Link {
                     Shortcut = "Shortcut",
@@ -101,13 +110,14 @@ namespace Wox.Links.Tests.Parsers {
                 }
             });
 
-            _saveParser.TryParse("cut".AsQuery(), out var results)
+            _parser.TryParse("cut".AsQuery(), out var results)
                 .Should().BeTrue();
 
 
             results[0].Title.Should().Be("[Shortcut] Open IDPF-{Parameter is missing} ticket");
             results[0].SubTitle.Should().Be("https://jira.com/STF-{Parameter is missing}");
-            results[0].Action(new ActionContext()).Should().BeFalse();
+            results[0].Action(_actionContext).Should().BeFalse();
+            _linkProcess.DidNotReceive().Open(Arg.Any<string>());
         }
     }
 }

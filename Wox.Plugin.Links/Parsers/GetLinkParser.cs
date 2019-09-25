@@ -34,9 +34,13 @@ namespace Wox.Plugin.Links.Parsers {
         public ParserPriority Priority { get; } = ParserPriority.High;
 
         private Result Create(Link link, string arg) {
-            var description = string.IsNullOrEmpty(link.Description) ? "" : FormatDescription(link.Description, arg);
+            var description = string.IsNullOrEmpty(link.Description)
+                ? ""
+                : FormatDescription(link.Description, arg);
             var title = $"[{link.Shortcut}] {description}";
-            var formattedData = Format(link.Path, arg);
+            
+            var canOpenLink = !ArgumentIsMissing(link.Path, arg);
+            var formattedData = FormatDescription(link.Path, arg);
             var subTitle = link.Type == LinkType.Path
                 ? formattedData
                 : formattedData.Replace(Environment.NewLine, " ↵ ");
@@ -44,9 +48,9 @@ namespace Wox.Plugin.Links.Parsers {
             return new Result {
                 Title = title,
                 SubTitle = subTitle,
-                IcoPath = @"icon.png",
+                IcoPath = @"images/icon.png",
                 Action = context => {
-                    if (context.SpecialKeyState.CtrlPressed) {
+                    if (context.SpecialKeyState?.CtrlPressed == true) {
                         var dialogResult = MessageBox.Show($"Delete shortcut: '{link.Shortcut}'?", "Confirmation",
                             MessageBoxButtons.YesNo);
                         if (dialogResult == DialogResult.Yes) _storage.Delete(link.Shortcut);
@@ -58,20 +62,17 @@ namespace Wox.Plugin.Links.Parsers {
                         return true;
                     }
 
-                    var canOpenLink = !formattedData.Contains("@@");
                     return canOpenLink && _linkProcess.Open(formattedData);
                 }
             };
         }
 
-        private static string Format(string format, string arg) {
-            if (string.IsNullOrWhiteSpace(arg) && format.Contains("@@")) return format;
-
-            return format?.Replace("@@", arg);
+        private static bool ArgumentIsMissing(string format, string arg) {
+            return string.IsNullOrWhiteSpace(arg) && format.Contains("@@");
         }
 
         private static string FormatDescription(string format, string arg) {
-            if (string.IsNullOrWhiteSpace(arg)) arg = "{Parameter is missing}";
+            if (ArgumentIsMissing(format, arg)) arg = "{Parameter is missing}";
 
             return format?.Replace("@@", arg);
         }
